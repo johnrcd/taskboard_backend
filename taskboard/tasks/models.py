@@ -38,7 +38,7 @@ class Task(models.Model):
     )
 
     poster = models.ForeignKey(
-        get_user_model,
+        get_user_model(),
         on_delete=models.CASCADE,
     )
 

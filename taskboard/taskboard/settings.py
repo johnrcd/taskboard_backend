@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'users',
+    'tasks',
 ]
 
 AUTH_USER_MODEL = "users.TaskboardUser"  # new
