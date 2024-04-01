@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
@@ -18,9 +19,12 @@ class Project(models.Model):
     summary = models.CharField(
         max_length=255,
         blank=True,
-        default="No summary provided.",
+        default=None,
     )
     """An overview of a project."""
+
+    def __str__(self):
+        return self.name
 
 
 class Task(models.Model):
@@ -44,9 +48,6 @@ class Task(models.Model):
 
         ISSUE   = "ISSU", _("Issue")
         """Bug or issue with existing project."""
-
-        UNKNOWN = "UNKN", _("UNKNOWN")
-        """Default value if task type wasn't provided."""
 
     class Status(models.TextChoices):
         """Enumeration for the status of a task."""
@@ -80,11 +81,18 @@ class Task(models.Model):
         This status is used when an attempt to complete the task has
         been made, but it cannot or will not be completed.
         """
+
+    uuid = models.UUIDField( 
+        primary_key = True, 
+        default = uuid.uuid4, 
+        editable = False
+    )
+    """ID for a task."""
     
     summary = models.CharField(
         max_length=255, # same length as Jira summary length
         blank=True,
-        default="No summary provided.",
+        default=None,
     )
     """Short description of task. Ideally a single sentence."""
 
@@ -92,7 +100,7 @@ class Task(models.Model):
         # 255 * 16 because i am not doing Jira's 32,767 characters
         max_length=4080,
         blank=True,
-        default="No description provided."
+        default=None,
     )
     """Long description of a task. If the task is an issue, this will
     explain the details of the problem; if it's a feature, it'll go
@@ -119,7 +127,7 @@ class Task(models.Model):
     type = models.CharField(
         max_length=4,
         choices=Type,
-        default=Type.UNKNOWN,
+        default=Type.TASK,
     )
     """Type of task."""
 
@@ -133,7 +141,7 @@ class Task(models.Model):
     status_comment = models.CharField(
         max_length=255,
         blank=True,
-        default="Task successfuly created.",
+        default=None,
     )
     """Optional field for explaining the reason for a status.
     
@@ -145,3 +153,6 @@ class Task(models.Model):
         auto_now_add=True
     )
     """Date task was created."""
+
+    def __str__(self):
+        return self.summary
