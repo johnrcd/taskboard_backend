@@ -13,14 +13,15 @@ class TaskViewSet(viewsets.ViewSet):
     CRUD Functionality related to Tasks.
     """
 
-    queryset = Task.objects.all()
     lookup_field = "uuid"
 
     def list(self, request):
-        serializer = TaskOverviewSerializer(self.queryset, many=True)
+        queryset = Task.objects.all().order_by("-date_created")
+        serializer = TaskOverviewSerializer(queryset, many=True)
         return Response(serializer.data)
     
     def retrieve(self, request, uuid=None):
-        task = get_object_or_404(self.queryset, uuid=uuid)
+        queryset = Task.objects.all()
+        task = get_object_or_404(queryset, uuid=uuid)
         serializer = TaskDetailsSerializer(task)
         return Response(serializer.data)

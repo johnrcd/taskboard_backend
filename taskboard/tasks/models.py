@@ -82,6 +82,9 @@ class Task(models.Model):
         been made, but it cannot or will not be completed.
         """
 
+    class Meta:
+        ordering = ['-date_created']
+
     uuid = models.UUIDField( 
         primary_key = True, 
         default = uuid.uuid4, 
