@@ -118,8 +118,6 @@ class Task(models.Model):
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
-        blank=True,
-        default=None,
     )
     """The project that a task is connected to.
     
