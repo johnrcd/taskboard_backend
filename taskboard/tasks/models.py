@@ -9,6 +9,42 @@ class Project(models.Model):
     
     Tasks which themselves aren't suggestions for new projects will be
     connected to an existing project."""
+    
+    class Type(models.TextChoices):
+        """Enumeration for the different project types."""
+
+        GAME = "GAME", _("Game"),
+        """Videogame.
+        
+        This project type takes presedence over all the other types.
+        """
+
+        MUSIC = "MSIC", _("Music"),
+        """Music, whether in the form of a single song, or a
+        collection.
+        
+        Music is chosen when the work Rovi does for the project is
+        focused on music. Even when the project itself isn't music
+        focused (e.g., a game), if a large majority of the work he
+        does for the project is music focused, it will be categorized
+        as a Music project.
+        """
+
+        WEBSITE = "SITE", _("Website"),
+        """Website.
+        
+        When a project can be considered a "webapp" (accessable
+        through both an execuable and on a web browser), the Website
+        project type will take precedence.
+        """
+
+        APPLICATION = "APPL", _("Application"),
+        """Standalone application. Applies to any device; computers,
+        mobile devices, etc."""
+
+        OTHER = "OTHR", _("Other"),
+        """Used for projects that cannot fit neatly into one of the
+        other categories."""
 
     name = models.CharField(
         max_length=255,
@@ -22,6 +58,13 @@ class Project(models.Model):
         default=None,
     )
     """An overview of a project."""
+
+    type = models.CharField(
+        max_length=4,
+        choices=Type,
+        default=Type.OTHER,
+    )
+    """Type of task."""
 
     def __str__(self):
         return self.name
