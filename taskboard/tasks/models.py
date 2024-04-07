@@ -142,7 +142,7 @@ class Task(models.Model):
     )
     """Short description of task. Ideally a single sentence."""
 
-    description = models.CharField(
+    description = models.TextField(
         # 255 * 16 because i am not doing Jira's 32,767 characters
         max_length=4080,
         blank=True,
