@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404
-from .models import Task, Project
+from .models import Task, Project, Comment
 from users.models import TaskboardUser
 
 class TaskOverviewSerializer(serializers.ModelSerializer):
@@ -50,4 +50,22 @@ class TaskDetailsSerializer(serializers.ModelSerializer):
 
         return data
 
+class CommentSerializer(serializers.ModelSerializer):
+    """Returns details of a comment."""
     
+    class Meta:
+        model = Comment
+        fields = "__all__"
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        # replace foreign keys with string representation
+
+        poster_pk = data.pop("poster")
+
+        data.update({
+            "poster": TaskboardUser.objects.get(pk=poster_pk).username
+        })
+
+        return data
