@@ -182,7 +182,7 @@ class Task(models.Model):
     )
     """Progress of task."""
 
-    status_comment = models.CharField(
+    comments = models.CharField(
         max_length=255,
         blank=True,
         default=None,
@@ -193,7 +193,7 @@ class Task(models.Model):
     status for a task: Complete, Rejected, and Cancelled.
     """
 
-    date_created = models.DateField(
+    date_created = models.DateTimeField(
         auto_now_add=True
     )
     """Date task was created."""
