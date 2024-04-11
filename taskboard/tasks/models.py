@@ -184,17 +184,6 @@ class Task(models.Model):
     )
     """Progress of task."""
 
-    comments = models.CharField(
-        max_length=255,
-        blank=True,
-        default=None,
-    )
-    """Optional field for explaining the reason for a status.
-    
-    Expected to be used for status's that are typically the final
-    status for a task: Complete, Rejected, and Cancelled.
-    """
-
     date_created = models.DateTimeField(
         auto_now_add=True
     )
@@ -214,6 +203,12 @@ class Comment(models.Model):
     )
     """The user that created the comment."""
 
+    task = models.ForeignKey(
+        Task,
+        on_delete=models.CASCADE,
+        related_name="comments",
+    )
+
     content = models.TextField(
         max_length=280, # length of a tweet lol
         blank=True,
@@ -227,4 +222,4 @@ class Comment(models.Model):
     """Datetime that comment was created."""
     
     def __str__(self):
-        return self.poster + ": " + self.content
+        return str(self.poster) + ": " + str(self.content)
