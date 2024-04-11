@@ -143,8 +143,8 @@ class Task(models.Model):
     """Short description of task. Ideally a single sentence."""
 
     description = models.TextField(
-        # 255 * 16 because i am not doing Jira's 32,767 characters
-        max_length=4080,
+        # 256 * 16 - 1 because i am not doing Jira's 32,767 characters
+        max_length=4095,
         blank=True,
         default=None,
     )
@@ -155,12 +155,14 @@ class Task(models.Model):
     author = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
+        related_name="tasks",
     )
     """The user that created the task."""
 
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
+        related_name="tasks",
     )
     """The project that a task is connected to.
     
@@ -200,3 +202,29 @@ class Task(models.Model):
 
     def __str__(self):
         return self.summary
+
+
+class Comment(models.Model):
+    """Comment on a task."""
+
+    poster = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name="comments",
+    )
+    """The user that created the comment."""
+
+    content = models.TextField(
+        max_length=280, # length of a tweet lol
+        blank=True,
+        default=None,
+    )
+    """Content of the comment."""
+
+    date_created = models.DateTimeField(
+        auto_now_add=True
+    )
+    """Datetime that comment was created."""
+    
+    def __str__(self):
+        return self.poster + ": " + self.content
