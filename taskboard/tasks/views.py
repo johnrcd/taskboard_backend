@@ -30,7 +30,7 @@ class TaskViewSet(viewsets.ViewSet):
         serializer = TaskDetailsSerializer(task)
         return Response(serializer.data)
     
-class CommentViewSet(viewsets.Viewset):
+class CommentViewSet(viewsets.ViewSet):
 
     def list(self, request):
         queryset = Comment.objects.all().order_by("-date_created")

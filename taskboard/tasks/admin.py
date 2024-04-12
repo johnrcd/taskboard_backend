@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Project, Task, Comment
+from .models import Project, Task, Comment, Notification
 
 
 class ProjectAdmin(admin.ModelAdmin):
@@ -19,5 +19,10 @@ class TaskAdmin(admin.ModelAdmin):
     pass
 
 
+class NotificationAdmin(admin.ModelAdmin):
+    pass
+
+
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Task, TaskAdmin)
+admin.site.register(Notification, NotificationAdmin)

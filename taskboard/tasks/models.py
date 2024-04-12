@@ -223,3 +223,30 @@ class Comment(models.Model):
     
     def __str__(self):
         return str(self.poster) + ": " + str(self.content)
+    
+class Notification(models.Model):
+    """Notifications for users of the application."""
+
+    receiver = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name="notifications",
+    )
+    """The user recieving the notification"""
+
+    message = models.TextField(
+        # Jira summary length (256) * 2 - 1
+        max_length=511,
+        blank=True,
+        default=None,
+    )
+    "The contents of the notification."
+
+    is_read = models.BooleanField(default=False)
+    """True if the user has seen the notification, false if not."""
+
+    datetime_created = models.DateTimeField(auto_now_add=True)
+    """Datetime that comment was created."""
+
+    def __str__(self):
+        return "for: " + str(self.receiver) + "; message: " + str(self.message)
