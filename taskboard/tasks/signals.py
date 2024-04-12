@@ -10,7 +10,8 @@ def SendNotificationOnCommentPost(sender, instance, **kwargs):
     notification_receiver = instance.task.author
     task_summary = instance.task.summary
 
-    message = str(comment_poster) + " has posted a comment on your task: " + \
+    message = str(comment_poster) + \
+            " has posted a comment on your task: " + \
             str(task_summary)
     
     Notification.objects.create(
