@@ -22,7 +22,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["*",]
+ALLOWED_HOSTS = ["*", "johnrcd.pythonanywhere.com", ]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
