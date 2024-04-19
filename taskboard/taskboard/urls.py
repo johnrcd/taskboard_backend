@@ -22,6 +22,7 @@ from tasks import views
 router = DefaultRouter()
 
 router.register(r"tasks", views.TaskViewSet, basename='tasks')
+router.register(r"comments", views.CommentViewSet, basename='comments')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
