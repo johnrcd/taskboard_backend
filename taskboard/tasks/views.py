@@ -46,7 +46,7 @@ class CommentViewSet(viewsets.ViewSet):
         post.
         """
 
-        queryset = Comment.objects.all().order_by("-date_created")
+        queryset = Comment.objects.all().order_by("date_created")
 
         # ref: https://www.django-rest-framework.org/api-guide/filtering/#filtering-against-query-parameters
         uuid = self.request.query_params.get('uuid')
