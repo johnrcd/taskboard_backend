@@ -53,7 +53,9 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
+    "http://localhost:5173",             # npm run dev
+    "http://localhost:4137",             # num run preview
+    "https://rovidecena.com/taskboard/", # production
 ]
 
 ROOT_URLCONF = 'taskboard.urls'
