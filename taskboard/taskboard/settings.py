@@ -55,8 +55,10 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",   # npm run dev
     "http://localhost:4137",   # num run preview
-    "https://rovidecena.com", # production
+    "https://rovidecena.com",  # production
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True  # i don't know why the origins aren't working
 
 ROOT_URLCONF = 'taskboard.urls'
 
