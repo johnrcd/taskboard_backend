@@ -95,14 +95,15 @@ class Task(models.Model):
     class Status(models.TextChoices):
         """Enumeration for the status of a task."""
 
+        REVIEWING   = 'REVW', _("Reviewing")
+        """Default value. Task has been created, but progress has not
+        been started yet."""
+
         TODO        = 'TODO', _("To Do")
-        """Default value. Task is part of to do list."""
+        """Task has been approved, but hasn't been worked on yet."""
 
         IN_PROGRESS = 'WORK', _("In Progress")
         """Task is being worked on."""
-
-        REVIEWING   = 'REVW', _("Reviewing")
-        """Task is considered complete, but needs to be reviewed."""
 
         COMPLETE    = 'DONE', _("Complete")
         """Task is complete."""
@@ -180,7 +181,7 @@ class Task(models.Model):
     status = models.CharField(
         max_length=4,
         choices=Status,
-        default=Status.TODO,
+        default=Status.REVIEWING,
     )
     """Progress of task."""
 
