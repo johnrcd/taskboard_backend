@@ -30,17 +30,49 @@ class TaskOverviewSerializer(serializers.ModelSerializer):
 
         return data
 
+class CommentSerializer(serializers.ModelSerializer):
+    """Returns details of a comment."""
+    
+    class Meta:
+        model = Comment
+        fields = ("content", "date_created", "poster")
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        # replace foreign keys with string representation
+
+        poster_pk = data.pop("poster")
+
+        data.update({
+            "poster": TaskboardUser.objects.get(pk=poster_pk).username
+        })
+
+        return data
+
 class TaskDetailsSerializer(serializers.ModelSerializer):
     """Returns the full information regarding a task.
     
     Author and Project foreign keys are replaced with their string
     representations. Type and Status enums are replaced with their
-    display strings.
+    display strings. Comments are given as an array.
     """
+
+    comments = CommentSerializer(many=True, read_only=True)
     
     class Meta:
         model = Task
-        fields = "__all__"
+        fields = (
+            "uuid",
+            "summary",
+            "description",
+            "type",
+            "status",
+            "date_created",
+            "author",
+            "project",
+            "comments",
+        )
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -64,25 +96,5 @@ class TaskDetailsSerializer(serializers.ModelSerializer):
 
         data.update({"type": instance.get_type_display()})
         data.update({"status": instance.get_status_display()})
-
-        return data
-
-class CommentSerializer(serializers.ModelSerializer):
-    """Returns details of a comment."""
-    
-    class Meta:
-        model = Comment
-        fields = "__all__"
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-
-        # replace foreign keys with string representation
-
-        poster_pk = data.pop("poster")
-
-        data.update({
-            "poster": TaskboardUser.objects.get(pk=poster_pk).username
-        })
 
         return data
