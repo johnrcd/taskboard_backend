@@ -17,6 +17,9 @@ from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+print("where is my env file")
+print(str(BASE_DIR) + '.env')
+
 load_dotenv(BASE_DIR / '.env')
 
 SECRET_KEY = os.getenv("SECRET_KEY")
