@@ -30,6 +30,7 @@ class TaskOverviewSerializer(serializers.ModelSerializer):
 
         return data
 
+
 class CommentSerializer(serializers.ModelSerializer):
     """Returns details of a comment."""
     
@@ -49,6 +50,7 @@ class CommentSerializer(serializers.ModelSerializer):
         })
 
         return data
+
 
 class TaskDetailsSerializer(serializers.ModelSerializer):
     """Returns the full information regarding a task.
@@ -97,4 +99,28 @@ class TaskDetailsSerializer(serializers.ModelSerializer):
         data.update({"type": instance.get_type_display()})
         data.update({"status": instance.get_status_display()})
 
+        return data
+
+
+class ProjectOverviewSerializer(serializers.ModelSerializer):
+    """Returns project names."""
+
+    class Meta:
+        model = Project
+        fields = ("name", )
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        return data
+    
+class ProjectDetailsSerializer(serializers.ModelSerializer):
+    """Returns all fields of a project model."""
+
+    class Meta:
+        model = Project
+        fields = "__all__"
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data.update({"type": instance.get_type_display()})
         return data

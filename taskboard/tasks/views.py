@@ -6,8 +6,10 @@ from .serializers import (
     TaskOverviewSerializer,
     TaskDetailsSerializer,
     CommentSerializer,
+    ProjectOverviewSerializer,
+    ProjectDetailsSerializer,
 )
-from .models import Task, Comment
+from .models import Task, Comment, Project
 from django.db.models import Prefetch
 
 
@@ -35,4 +37,30 @@ class TaskViewSet(viewsets.ViewSet):
         queryset = Task.objects.all()
         task = get_object_or_404(queryset, uuid=uuid)
         serializer = TaskDetailsSerializer(task)
+        return Response(serializer.data)
+
+
+class ProjectViewSet(viewsets.ViewSet):
+    "ViewSet for the Projects model."
+
+    lookup_field = "name"
+
+    def list(self, request):
+        "Returns the list of projects."
+
+        queryset = Project.objects.all()
+        serializer = ProjectOverviewSerializer(queryset, many=True)
+        project_list = []
+        for item in serializer.data:
+            project_list.append((item.pop("name")))
+            pass
+        
+        return Response(project_list)
+    
+    def retrieve(self, request, name=None):
+        "Returns a single project."
+
+        queryset = Project.objects.all()
+        project = get_object_or_404(queryset, name=name)
+        serializer = ProjectDetailsSerializer(project)
         return Response(serializer.data)

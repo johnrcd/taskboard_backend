@@ -6,6 +6,6 @@ from rest_framework_simplejwt.authentication import JWTStatelessUserAuthenticati
 
 class LoginStatusAPI(APIView):
     authentication_classes = [JWTStatelessUserAuthentication]
-    
+
     def get(self, request, format=None):
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_200_OK)  
