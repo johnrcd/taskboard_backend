@@ -235,7 +235,8 @@ class Comment(models.Model):
     
     def __str__(self):
         return str(self.poster) + ": " + str(self.content)
-    
+
+
 class Notification(models.Model):
     """Notifications for users of the application."""
 

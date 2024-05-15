@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 
 from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from .serializers import (
     TaskOverviewSerializer,
     TaskDetailsSerializer,
@@ -15,7 +16,7 @@ from django.db.models import Prefetch
 
 class TaskViewSet(viewsets.ViewSet):
     """ViewSet for the Task model."""
-
+    permission_classes=(AllowAny,)
     lookup_field = "uuid"
 
     def list(self, request):
@@ -41,12 +42,13 @@ class TaskViewSet(viewsets.ViewSet):
 
 
 class ProjectViewSet(viewsets.ViewSet):
-    "ViewSet for the Projects model."
+    """ViewSet for the Projects model."""
 
+    permission_classes=(AllowAny,)
     lookup_field = "name"
 
     def list(self, request):
-        "Returns the list of projects."
+        """Returns the list of projects."""
 
         queryset = Project.objects.all()
         serializer = ProjectOverviewSerializer(queryset, many=True)
@@ -58,7 +60,7 @@ class ProjectViewSet(viewsets.ViewSet):
         return Response(project_list)
     
     def retrieve(self, request, name=None):
-        "Returns a single project."
+        """Returns a single project."""
 
         queryset = Project.objects.all()
         project = get_object_or_404(queryset, name=name)
