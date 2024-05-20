@@ -18,7 +18,7 @@ from django.db.models import Prefetch
 
 class TaskViewSet(viewsets.ViewSet):
     """ViewSet for the Task model."""
-    
+
     permission_classes=(IsAuthenticatedOrReadOnly,)
     lookup_field = "uuid"
 
@@ -47,7 +47,7 @@ class TaskViewSet(viewsets.ViewSet):
         data_copy = request.data.copy()
 
         try:
-            data_copy["author"] = request.user
+            data_copy["author"] = request.user.id
         except Exception:
             message = {
                 "details" : "Attempted to create a new task, but failed to " \
