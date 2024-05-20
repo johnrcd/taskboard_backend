@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from .serializers import (
     TaskOverviewSerializer,
     TaskDetailsSerializer,
@@ -12,12 +12,14 @@ from .serializers import (
     ProjectDetailsSerializer,
 )
 from .models import Task, Comment, Project
+from users.models import TaskboardUser
 from django.db.models import Prefetch
 
 
 class TaskViewSet(viewsets.ViewSet):
     """ViewSet for the Task model."""
-    permission_classes=(AllowAny,)
+    
+    permission_classes=(IsAuthenticatedOrReadOnly,)
     lookup_field = "uuid"
 
     def list(self, request):
@@ -42,7 +44,19 @@ class TaskViewSet(viewsets.ViewSet):
         return Response(serializer.data)
     
     def create(self, request):
-        serializer = TaskCreateSerializer(data=request.data)
+        data_copy = request.data.copy()
+
+        try:
+            data_copy["author"] = request.user
+        except Exception:
+            message = {
+                "details" : "Attempted to create a new task, but failed to " \
+                    "set author field." ,
+            }
+            return Response(message, status=status.HTTP_404_NOT_FOUND)
+        
+
+        serializer = TaskCreateSerializer(data=data_copy)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)

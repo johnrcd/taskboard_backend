@@ -109,7 +109,9 @@ class TaskCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """
         Create and return a new Task instance, given the validated data.
-        """
+        """ 
+        print("YEE HAW")
+        print(validated_data)
         return Task.objects.create(**validated_data)
 
 class ProjectOverviewSerializer(serializers.ModelSerializer):
