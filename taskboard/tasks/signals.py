@@ -1,7 +1,10 @@
 from django.db.models.signals import post_save
+from django.db import transaction
 from django.dispatch import receiver
 
-from .models import Comment, Notification
+from functools import partial
+
+from .models import Comment, Notification, Task
 
 
 @receiver(post_save, sender=Comment)
@@ -18,3 +21,24 @@ def SendNotificationOnCommentPost(sender, instance, **kwargs):
         receiver=notification_receiver,
         message=message
     )
+
+@receiver(post_save, sender=Task)
+def save(sender, instance, *args, **kwargs):
+    # need this if statement or else it'll endless recurse
+    if instance.type == instance.Type.PROJECT and instance.project != None:
+        transaction.on_commit(partial(
+            validate_task_instance,
+            sender=sender,
+            instance=instance,
+        ))
+
+# https://docs.djangoproject.com/en/5.0/topics/db/transactions/#performing-actions-after-commit
+def validate_task_instance(sender, instance, *args, **kwargs):
+    if instance.type == instance.Type.PROJECT and instance.project != None:
+        print("\r\nAttempting to save Task model instance with type as " \
+                "Type.PROJECT, but project field is set as not null. The " \
+                "project field will be automatically set to null.\r\n"
+                )
+        instance.project = None
+    super(Task, instance).save(*args, **kwargs)
+    pass

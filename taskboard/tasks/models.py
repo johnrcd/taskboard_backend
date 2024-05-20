@@ -192,15 +192,6 @@ class Task(models.Model):
     )
     """Date task was created."""
 
-    def save(self, *args, **kwargs):
-        if self.type == self.Type.PROJECT and self.project != None:
-            print("\r\nAttempting to save Task model instance with type as " \
-                  "Type.PROJECT, but project field is set as not null. The " \
-                  "project field will be automatically set to null.\r\n"
-                  )
-            self.project = None
-        super(Task, self).save(*args, **kwargs, update_fields=["project"])
-
     def __str__(self):
         return self.summary
 

@@ -1,11 +1,12 @@
 from django.shortcuts import render, get_object_or_404
 
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from .serializers import (
     TaskOverviewSerializer,
     TaskDetailsSerializer,
+    TaskCreateSerializer,
     CommentSerializer,
     ProjectOverviewSerializer,
     ProjectDetailsSerializer,
@@ -39,6 +40,12 @@ class TaskViewSet(viewsets.ViewSet):
         task = get_object_or_404(queryset, uuid=uuid)
         serializer = TaskDetailsSerializer(task)
         return Response(serializer.data)
+    
+    def create(self, request):
+        serializer = TaskCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class ProjectViewSet(viewsets.ViewSet):
