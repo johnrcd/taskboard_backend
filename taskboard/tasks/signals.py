@@ -8,7 +8,7 @@ from .models import Comment, Notification, Task
 
 
 @receiver(post_save, sender=Comment)
-def SendNotificationOnCommentPost(sender, instance, **kwargs):
+def comment_post_save_handler(sender, instance, **kwargs):
     comment_poster = instance.poster.username
     notification_receiver = instance.task.author
     task_summary = instance.task.summary
@@ -23,8 +23,8 @@ def SendNotificationOnCommentPost(sender, instance, **kwargs):
     )
 
 @receiver(post_save, sender=Task)
-def save(sender, instance, *args, **kwargs):
-    # need this if statement or else it'll endless recurse
+def task_post_save_handler(sender, instance, *args, **kwargs):
+    # need this if statement or else it'll endlessly recurse
     if instance.type == instance.Type.PROJECT and instance.project != None:
         transaction.on_commit(partial(
             validate_task_instance,
@@ -41,4 +41,3 @@ def validate_task_instance(sender, instance, *args, **kwargs):
                 )
         instance.project = None
     super(Task, instance).save(*args, **kwargs)
-    pass
