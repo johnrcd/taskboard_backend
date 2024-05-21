@@ -55,6 +55,17 @@ class TaskViewSet(viewsets.ViewSet):
             }
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         
+        try:
+            
+            project_name = data_copy["project"]
+            if str(project_name) != "":
+                data_copy["project"] = Project.objects.get(name=project_name).id
+        except Exception:
+            message = {
+                "details" : "Could not find project with a name of " \
+                    + str(project_name) + "."
+            }
+            return Response(message, status=status.HTTP_404_NOT_FOUND)
 
         serializer = TaskCreateSerializer(data=data_copy)
         serializer.is_valid(raise_exception=True)
