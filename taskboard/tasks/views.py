@@ -56,7 +56,6 @@ class TaskViewSet(viewsets.ViewSet):
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         
         try:
-            
             project_name = data_copy["project"]
             if str(project_name) != "":
                 data_copy["project"] = Project.objects.get(name=project_name).id
