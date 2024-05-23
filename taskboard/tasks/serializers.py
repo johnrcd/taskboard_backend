@@ -88,7 +88,12 @@ class TaskDetailsSerializer(serializers.ModelSerializer):
             "author": TaskboardUser.objects.get(pk=author_pk).username}
         )
 
-        project_name = "None" if instance.get_type_display() == "Project" else Project.objects.get(pk=project_pk).name
+        # TODO: replace this with something that doesn't require a try/catch
+        #       not sure how efficient try/catch is in Python but it can't be good lol
+        try:
+            project_name = "None" if instance.get_type_display() == "Project" else Project.objects.get(pk=project_pk).name
+        except Exception:
+            project_name = "None"
 
         data.update({"project": project_name})
 
@@ -110,8 +115,6 @@ class TaskCreateSerializer(serializers.ModelSerializer):
         """
         Create and return a new Task instance, given the validated data.
         """ 
-        print("YEE HAW")
-        print(validated_data)
         return Task.objects.create(**validated_data)
 
 class ProjectOverviewSerializer(serializers.ModelSerializer):
