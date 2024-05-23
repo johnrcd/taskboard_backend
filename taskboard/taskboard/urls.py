@@ -29,6 +29,7 @@ router = DefaultRouter()
 
 router.register(r"tasks", views.TaskViewSet, basename='tasks')
 router.register(r"projects", views.ProjectViewSet, basename="projects")
+router.register(r"comments", views.CommentViewSet, basename="comments")
 
 urlpatterns = [
     path('admin/', admin.site.urls),

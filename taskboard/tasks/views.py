@@ -8,12 +8,14 @@ from .serializers import (
     TaskDetailsSerializer,
     TaskCreateSerializer,
     CommentSerializer,
+    CommentCreateSerializer,
     ProjectOverviewSerializer,
     ProjectDetailsSerializer,
 )
 from .models import Task, Comment, Project
 from users.models import TaskboardUser
 from django.db.models import Prefetch
+import uuid
 
 
 class TaskViewSet(viewsets.ViewSet):
@@ -97,3 +99,51 @@ class ProjectViewSet(viewsets.ViewSet):
         project = get_object_or_404(queryset, name=name)
         serializer = ProjectDetailsSerializer(project)
         return Response(serializer.data)
+    
+class CommentViewSet(viewsets.ViewSet):
+    """ViewSet for the Comments model."""
+
+    permission_classes=(IsAuthenticatedOrReadOnly,)
+
+    def list(self, request):
+        queryset = Comment.objects.all()
+        serializer = CommentSerializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    def retrieve(self, request, pk=None):
+        """Returns a single comment."""
+
+        queryset = Comment.objects.all()
+        comment = get_object_or_404(queryset, pk=pk)
+        serializer = CommentSerializer(comment)
+        return Response(serializer.data)
+    
+    def create(self, request):
+        data_copy = request.data.copy()
+
+        print(data_copy)
+
+        try:
+            data_copy["poster"] = request.user.id
+        except Exception:
+            message = {
+                "details" : "Attempted to create a new comment, but failed to " \
+                    "set author field." ,
+            }
+            return Response(message, status=status.HTTP_404_NOT_FOUND)
+        
+        # try:
+        #     task_uuid = data_copy["task_id"]
+        #     data_copy["task_id"] = Task.objects.get(uuid=uuid.UUID(task_uuid)).uuid
+        # except Exception:
+        #     message = {
+        #         "details" : "Could not find task with a UUID of " \
+        #             + str(task_uuid) + "."
+        #     }
+        #     return Response(message, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = CommentCreateSerializer(data=data_copy)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        

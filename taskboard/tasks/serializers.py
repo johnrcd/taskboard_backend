@@ -51,6 +51,15 @@ class CommentSerializer(serializers.ModelSerializer):
 
         return data
 
+class CommentCreateSerializer(serializers.ModelSerializer):
+    """Serializer for creating a comment."""
+
+    class Meta:
+        model = Comment
+        fields = "__all__"
+
+    def create(self, validated_data):
+        return Comment.objects.create(**validated_data)
 
 class TaskDetailsSerializer(serializers.ModelSerializer):
     """Returns the full information regarding a task.
