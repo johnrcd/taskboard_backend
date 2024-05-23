@@ -9,6 +9,9 @@ from .models import Comment, Notification, Task
 
 @receiver(post_save, sender=Comment)
 def comment_post_save_handler(sender, instance, **kwargs):
+    """Creates a new Notification model whenever a comment is posted on
+    a task."""
+
     comment_poster = instance.poster.username
     notification_receiver = instance.task.author
     task_summary = instance.task.summary
@@ -24,6 +27,8 @@ def comment_post_save_handler(sender, instance, **kwargs):
 
 @receiver(post_save, sender=Task)
 def task_post_save_handler(sender, instance, *args, **kwargs):
+    """Handles the validation of Tasks when they are saved."""
+    
     # need this if statement or else it'll endlessly recurse
     if instance.type == instance.Type.PROJECT and instance.project != None:
         transaction.on_commit(partial(

@@ -32,7 +32,11 @@ class TaskOverviewSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    """Returns details of a comment."""
+    """Returns details of a comment.
+    
+    Due to the simplicity of the Comment model, there is no divide
+    between the list and retrieve views. They both return the same
+    fields."""
     
     class Meta:
         model = Comment
@@ -59,6 +63,8 @@ class CommentCreateSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def create(self, validated_data):
+        """Creates a new comment."""
+        
         return Comment.objects.create(**validated_data)
 
 class TaskDetailsSerializer(serializers.ModelSerializer):
