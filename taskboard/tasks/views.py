@@ -132,16 +132,6 @@ class CommentViewSet(viewsets.ViewSet):
             }
             return Response(message, status=status.HTTP_404_NOT_FOUND)
         
-        # try:
-        #     task_uuid = data_copy["task_id"]
-        #     data_copy["task_id"] = Task.objects.get(uuid=uuid.UUID(task_uuid)).uuid
-        # except Exception:
-        #     message = {
-        #         "details" : "Could not find task with a UUID of " \
-        #             + str(task_uuid) + "."
-        #     }
-        #     return Response(message, status=status.HTTP_404_NOT_FOUND)
-        
         serializer = CommentCreateSerializer(data=data_copy)
         serializer.is_valid(raise_exception=True)
         serializer.save()
