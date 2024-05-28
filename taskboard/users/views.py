@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTStatelessUserAuthentication
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import TaskboardUserCreateSerializer
 
 class LoginStatusAPI(APIView):
     authentication_classes = [JWTStatelessUserAuthentication]
@@ -30,7 +31,21 @@ class RegisterAPI(APIView):
         if not is_data_valid:
             return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+        serializer = TaskboardUserCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        print(serializer.data)
+        # don't show unused/private fields like password, groups, and user groups   
+        return_data = {}
+        return_data["id"]           = serializer.data["id"]
+        return_data["username"]     = serializer.data["username"]
+        return_data["is_superuser"] = serializer.data["is_superuser"]
+        return_data["is_staff"]     = serializer.data["is_staff"]
+        return_data["is_active"]    = serializer.data["is_active"]
+        return_data["date_joined"]  = serializer.data["date_joined"]
+
+        return Response(data=return_data, status=status.HTTP_201_CREATED)
 
 
 # https://stackoverflow.com/a/55859751

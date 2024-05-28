@@ -71,6 +71,7 @@ class TaskViewSet(viewsets.ViewSet):
         serializer = TaskCreateSerializer(data=data_copy)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -120,8 +121,6 @@ class CommentViewSet(viewsets.ViewSet):
     
     def create(self, request):
         data_copy = request.data.copy()
-
-        print(data_copy)
 
         try:
             data_copy["poster"] = request.user.id
