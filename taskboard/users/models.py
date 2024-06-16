@@ -13,9 +13,11 @@ class TaskboardUser(AbstractUser):
             MinLengthValidator(
                 3, _("Minimum username length is 3 characters."),
             ),
+            # NOTE: validators only work for model forms.
+            #       just use serializers to produce errors
             RegexValidator(
-                r'[A-Za-z0-9_-]',
-                _("Usernames may only have alphanumerical characters, " \
+                regex=r'[a-zA-Z0-9_-]+$',
+                message=("Usernames may only have alphanumerical characters, " \
                   "underscores, and dashes.")
             )
         ],
