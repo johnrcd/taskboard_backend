@@ -26,5 +26,27 @@ class TaskboardUser(AbstractUser):
 
     USERNAME_FIELD = 'username'
 
+    name = models.CharField(
+        max_length=127,
+        blank=True,
+        null=False,
+        default="",
+    )
+    """Name of the user."""
+
+    title = models.CharField(
+        max_length=127,
+        blank=True,
+        null=False,
+        default="",
+    )
+
+    about_me = models.CharField(
+        max_length=255, # for reference: twitter max length is 160
+        blank=True,
+        null=False,
+        default="",
+    )
+
     def __str__(self):
         return self.username
