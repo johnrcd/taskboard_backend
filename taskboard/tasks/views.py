@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 
 from rest_framework import viewsets, status
+from rest_framework.decorators import api_view, schema, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from .serializers import (
@@ -11,8 +12,9 @@ from .serializers import (
     CommentCreateSerializer,
     ProjectOverviewSerializer,
     ProjectDetailsSerializer,
+    NotificationDetailsSerializer,
 )
-from .models import Task, Comment, Project
+from .models import Task, Comment, Project, Notification
 from users.models import TaskboardUser
 from django.db.models import Prefetch
 import uuid
@@ -135,4 +137,14 @@ class CommentViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+# Notifications behave differently compared to other models and use
+# functions instead of classes for the views
+
+@api_view(["GET"])
+def view_notifications(request, username):
+    user = get_object_or_404(TaskboardUser.objects.all(), username=username)
+    queryset = Notification.objects.filter(receiver=user)
+    serializer = NotificationDetailsSerializer(queryset, many=True)
+    return Response(serializer.data)
         

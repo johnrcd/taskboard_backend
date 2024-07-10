@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404
-from .models import Task, Project, Comment
+from .models import Task, Project, Comment, Notification
 from users.models import TaskboardUser
 
 class TaskOverviewSerializer(serializers.ModelSerializer):
@@ -154,3 +154,10 @@ class ProjectDetailsSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         data.update({"type": instance.get_type_display()})
         return data
+    
+class NotificationDetailsSerializer(serializers.ModelSerializer):
+    """Serializer for viewing notifications."""
+
+    class Meta:
+        model = Notification
+        fields = ("message", "datetime_created", "type", "location")

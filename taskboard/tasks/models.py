@@ -229,8 +229,28 @@ class Comment(models.Model):
 
 
 class Notification(models.Model):
-    """Notifications for users of the application."""
+    """Notifications for users of the application.
+    
+    Notifications are created by the server whenever a relevant action
+    is performed.
+    """
 
+    class Type(models.TextChoices):
+        TEXT_ONLY = "MSG", _("Message"),
+        """Notification that simply provides a status update, with no
+        action needed for the user.
+        
+        When this is used, the location field can be ignored.
+        """
+
+        TASK = "TSK", _("Task"),
+        """Notifications related to a task -- status change, or
+        comment.
+        
+        When this is used, the location field refers to the UUID of
+        the task.
+        """
+        
     receiver = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
@@ -239,18 +259,37 @@ class Notification(models.Model):
     """The user recieving the notification"""
 
     message = models.TextField(
-        # Jira summary length (256) * 2 - 1
         max_length=511,
         blank=True,
         default=None,
     )
-    "The contents of the notification."
+    """The contents of the notification."""
 
     is_read = models.BooleanField(default=False)
     """True if the user has seen the notification, false if not."""
 
     datetime_created = models.DateTimeField(auto_now_add=True)
-    """Datetime that comment was created."""
+    """Datetime that the notification was created."""
+
+    type = models.CharField(
+        max_length=4,
+        choices=Type,
+        default=Type.TEXT_ONLY,
+    )
+    """The type of notification.
+    
+    This field is meant to be used by the frontend to generate links
+    based on the contents of the notification."""
+
+    location = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+        default="",
+    )
+    """Used when notifications can be clicked to take the user to a
+    different page. The contents of this field is dependant on the
+    type of notification."""
 
     def __str__(self):
         return "for: " + str(self.receiver) + "; message: " + str(self.message)
