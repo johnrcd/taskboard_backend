@@ -19,15 +19,6 @@ class TaskOverviewSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-
-        # change summary to include type
-        summary = data.pop("summary")
-        type = data.pop("type")
-
-        data.update({
-            "summary": "[" + str(instance.get_type_display()) + "] " + summary
-        })
-
         return data
 
 
