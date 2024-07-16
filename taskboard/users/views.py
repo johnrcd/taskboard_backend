@@ -1,11 +1,15 @@
+from django.shortcuts import render, get_object_or_404
 
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from rest_framework_simplejwt.authentication import JWTStatelessUserAuthentication
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import TaskboardUserCreateSerializer
+
+from .serializers import TaskboardUserCreateSerializer, TaskboardUserProfileSerializer
+from .models import TaskboardUser
 
 class LoginStatusAPI(APIView):
     authentication_classes = [JWTStatelessUserAuthentication]
@@ -46,7 +50,12 @@ class RegisterAPI(APIView):
         return_data["date_joined"]  = serializer.data["date_joined"]
 
         return Response(data=return_data, status=status.HTTP_201_CREATED)
-
+    
+@api_view(["GET"])
+def view_profile(request, username):
+    user = get_object_or_404(TaskboardUser.objects.all(), username=username)
+    serializer = TaskboardUserProfileSerializer(user)
+    return Response(serializer.data)
 
 # https://stackoverflow.com/a/55859751
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

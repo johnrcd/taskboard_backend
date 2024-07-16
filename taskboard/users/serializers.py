@@ -29,3 +29,15 @@ class TaskboardUserCreateSerializer(serializers.ModelSerializer):
         user.save()
         
         return user
+
+class TaskboardUserProfileSerializer(serializers.ModelSerializer):
+    """Serializer for viewing a user's profile."""
+
+    class Meta:
+        model = TaskboardUser
+        fields = (
+            "username",
+            "name",
+            "title",
+            "about_me",
+        )

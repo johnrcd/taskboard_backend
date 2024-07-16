@@ -102,7 +102,8 @@ class ProjectViewSet(viewsets.ViewSet):
         project = get_object_or_404(queryset, name=name)
         serializer = ProjectDetailsSerializer(project)
         return Response(serializer.data)
-    
+
+
 class CommentViewSet(viewsets.ViewSet):
     """ViewSet for the Comments model."""
 
@@ -137,9 +138,7 @@ class CommentViewSet(viewsets.ViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
-# Notifications behave differently compared to other models and use
-# functions instead of classes for the views
+
 
 @api_view(["GET"])
 def view_notifications(request, username):

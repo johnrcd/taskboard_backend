@@ -18,7 +18,12 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from tasks import views
-from users.views import LoginStatusAPI, RegisterAPI, MyTokenObtainPairView
+from users.views import (
+    LoginStatusAPI,
+    RegisterAPI,
+    MyTokenObtainPairView,
+    view_profile,
+)
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -38,5 +43,6 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path("api/register/", RegisterAPI.as_view()),
     path('api/user/status/', LoginStatusAPI.as_view()),
-    path("api/notifications/<username>", views.view_notifications)
+    path("api/notifications/<username>", views.view_notifications),
+    path("api/user/profile/<username>", view_profile),
 ]
