@@ -293,3 +293,41 @@ class Notification(models.Model):
 
     def __str__(self):
         return "for: " + str(self.receiver) + "; message: " + str(self.message)
+    
+class Activity(models.Model):
+    """Activity within the application.
+    
+    Activity differs from notifications in two ways:
+    - Everyone can see everyone's activity
+    - Activity is not hidden once it's been read.
+    """
+    class Type(models.TextChoices):
+        """Enumeration for the different activity types."""
+
+        NEW_TASK           = "NTSK", _("New Task"),
+        NEW_COMMENT        = "NCMT", _("New Comment"),
+        TASK_STATUS_CHANGE = "TKSC", _("Task Status Change"),
+        UNKNOWN            = "UKWN", _("Unknown"),
+    
+    user = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name="activity",
+    )
+
+    type = models.CharField(
+        max_length=4,
+        choices=Type,
+        default=Type.UNKNOWN,
+    )
+
+    task = models.ForeignKey(
+        Task,
+        on_delete=models.CASCADE,
+        related_name="activity",
+        blank=True,
+        null=True,
+    )
+
+    def __str__(self):
+        return "from: " + str(self.user) + "; type: " + str(self.type)
