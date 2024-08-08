@@ -143,6 +143,8 @@ class CommentViewSet(viewsets.ViewSet):
 
 @api_view(["GET"])
 def view_notifications(request, username):
+    """Returns the user's current notifications"""
+
     user = get_object_or_404(TaskboardUser.objects.all(), username=username)
     queryset = Notification.objects.filter(receiver=user)
     serializer = NotificationDetailsSerializer(queryset, many=True)
@@ -150,6 +152,8 @@ def view_notifications(request, username):
 
 @api_view(["GET"])
 def view_user_activity(request, username):
+    """Returns a list of a user's activity on the website."""
+
     user = get_object_or_404(TaskboardUser.objects.all(), username=username)
     queryset = Activity.objects.filter(user=user)
     serializer = ActivityDetailsSerializer(queryset, many=True)

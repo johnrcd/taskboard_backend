@@ -41,9 +41,9 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/token/status/', LoginStatusAPI.as_view()),
     path("api/register/", RegisterAPI.as_view()),
-    path('api/user/status/', LoginStatusAPI.as_view()),
-    path("api/notifications/<username>", views.view_notifications),
-    path("api/user/profile/<username>", view_profile),
-    path("api/user/<username>/activity", views.view_user_activity),
+    path("api/user/<username>/notifications/", views.view_notifications),
+    path("api/user/<username>/profile/", view_profile),
+    path("api/user/<username>/activity/", views.view_user_activity),
 ]

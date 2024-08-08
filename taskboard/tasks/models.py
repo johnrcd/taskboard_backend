@@ -314,12 +314,14 @@ class Activity(models.Model):
         on_delete=models.CASCADE,
         related_name="activity",
     )
+    """The user who this activity is attached to."""
 
     type = models.CharField(
         max_length=4,
         choices=Type,
         default=Type.UNKNOWN,
     )
+    """The type of activity being performed."""
 
     task = models.ForeignKey(
         Task,
@@ -328,6 +330,7 @@ class Activity(models.Model):
         blank=True,
         null=True,
     )
+    """The task this activity is attached too (if it is attached to an activity)"""
 
     datetime_created = models.DateTimeField(auto_now_add=True)
     """Datetime that the notification was created."""
