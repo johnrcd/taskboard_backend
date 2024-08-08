@@ -329,5 +329,8 @@ class Activity(models.Model):
         null=True,
     )
 
+    datetime_created = models.DateTimeField(auto_now_add=True)
+    """Datetime that the notification was created."""
+
     def __str__(self):
         return "from: " + str(self.user) + "; type: " + str(self.type)

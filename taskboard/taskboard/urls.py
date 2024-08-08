@@ -45,4 +45,5 @@ urlpatterns = [
     path('api/user/status/', LoginStatusAPI.as_view()),
     path("api/notifications/<username>", views.view_notifications),
     path("api/user/profile/<username>", view_profile),
+    path("api/user/<username>/activity", views.view_user_activity),
 ]

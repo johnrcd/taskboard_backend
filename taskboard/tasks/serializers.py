@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.shortcuts import get_object_or_404
-from .models import Task, Project, Comment, Notification
+from .models import Task, Project, Comment, Notification, Activity
 from users.models import TaskboardUser
 
 class TaskOverviewSerializer(serializers.ModelSerializer):
@@ -152,3 +152,24 @@ class NotificationDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = ("message", "datetime_created", "type", "location")
+
+class ActivityDetailsSerializer(serializers.ModelSerializer):
+    """Serializer for viewing user activity."""
+
+    class Meta:
+        model = Activity
+        fields = "__all__"
+    
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+
+        user_pk = data.pop("user")
+
+        data.update({
+            "user": TaskboardUser.objects.get(pk=user_pk).username}
+        )
+
+        data.update({"type": instance.get_type_display()})
+
+        return data
+        

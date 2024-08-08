@@ -4,7 +4,7 @@ from django.dispatch import receiver
 
 from functools import partial
 
-from .models import Comment, Notification, Task
+from .models import Comment, Notification, Task, Activity
 
 
 @receiver(post_save, sender=Comment)
@@ -29,6 +29,13 @@ def comment_post_save_handler(sender, instance, **kwargs):
 def task_post_save_handler(sender, instance, *args, **kwargs):
     """Handles the validation of Tasks when they are saved."""
     
+    # TODO: prevent duplicate activity on refixing task instance
+    Activity.objects.create(
+        user=instance.author,
+        type=Activity.Type.NEW_TASK,
+        task=instance,
+    )
+
     # need this if statement or else it'll endlessly recurse
     if instance.type == instance.Type.PROJECT and instance.project != None:
         transaction.on_commit(partial(

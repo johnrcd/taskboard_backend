@@ -13,8 +13,9 @@ from .serializers import (
     ProjectOverviewSerializer,
     ProjectDetailsSerializer,
     NotificationDetailsSerializer,
+    ActivityDetailsSerializer,
 )
-from .models import Task, Comment, Project, Notification
+from .models import Task, Comment, Project, Notification, Activity
 from users.models import TaskboardUser
 from django.db.models import Prefetch
 import uuid
@@ -145,5 +146,12 @@ def view_notifications(request, username):
     user = get_object_or_404(TaskboardUser.objects.all(), username=username)
     queryset = Notification.objects.filter(receiver=user)
     serializer = NotificationDetailsSerializer(queryset, many=True)
+    return Response(serializer.data)
+
+@api_view(["GET"])
+def view_user_activity(request, username):
+    user = get_object_or_404(TaskboardUser.objects.all(), username=username)
+    queryset = Activity.objects.filter(user=user)
+    serializer = ActivityDetailsSerializer(queryset, many=True)
     return Response(serializer.data)
         
