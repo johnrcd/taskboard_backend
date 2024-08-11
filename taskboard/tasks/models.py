@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
@@ -188,9 +189,14 @@ class Task(models.Model):
     """Progress of task."""
 
     date_created = models.DateTimeField(
-        auto_now_add=True
+        auto_now_add=True,
     )
     """Date task was created."""
+
+    datetime_edited = models.DateTimeField(
+        auto_now=True,
+    )
+    """The last time the task was edited."""
 
     def __str__(self):
         return self.summary
