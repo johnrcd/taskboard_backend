@@ -33,9 +33,27 @@ class TaskViewSet(viewsets.ViewSet):
         Tasks are returned in reverse chronological order; newest to
         oldest. When listing tasks, only the UUID and summary fields
         are returned."""
+
+        sort_style = "-datetime_created"
+
+        if request.GET.get("filter", "") != "":
+            pass
+
+        # https://stackoverflow.com/a/3500905
+        if request.GET.get("sort", "") != "":
+            match request.GET.get("sort"):
+                case "created": # default
+                    sort_style = "-datetime_created"
+                    pass
+                case "edited":
+                    sort_style = "-datetime_edited"
+                case _:
+                    pass # TODO: draw exception?
+
         queryset = Task.objects.prefetch_related(
-                Prefetch("comments", queryset=Comment.objects.order_by('-date_created'))
-            ).order_by("-date_created")
+                Prefetch("comments", queryset=Comment.objects.order_by("-date_created"))
+            ).order_by(sort_style)
+
         serializer = TaskOverviewSerializer(queryset, many=True)
         return Response(serializer.data)
     
@@ -155,7 +173,7 @@ def view_user_activity(request, username):
     """Returns a list of a user's activity on the website."""
 
     user = get_object_or_404(TaskboardUser.objects.all(), username=username)
-    queryset = Activity.objects.filter(user=user)
+    queryset = Activity.objects.filter(user=user).order_by("-datetime_created")
     serializer = ActivityDetailsSerializer(queryset, many=True)
     return Response(serializer.data)
         

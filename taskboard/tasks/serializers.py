@@ -76,7 +76,7 @@ class TaskDetailsSerializer(serializers.ModelSerializer):
             "description",
             "type",
             "status",
-            "date_created",
+            "datetime_created",
             "author",
             "project",
             "comments",
