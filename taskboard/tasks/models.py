@@ -128,7 +128,7 @@ class Task(models.Model):
         """
 
     class Meta:
-        ordering = ['-date_created']
+        ordering = ['-datetime_created']
 
     uuid = models.UUIDField( 
         primary_key = True, 
@@ -188,7 +188,7 @@ class Task(models.Model):
     )
     """Progress of task."""
 
-    date_created = models.DateTimeField(
+    datetime_created = models.DateTimeField(
         auto_now_add=True,
     )
     """Date task was created."""
