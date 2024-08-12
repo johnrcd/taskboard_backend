@@ -176,4 +176,16 @@ def view_user_activity(request, username):
     queryset = Activity.objects.filter(user=user).order_by("-datetime_created")
     serializer = ActivityDetailsSerializer(queryset, many=True)
     return Response(serializer.data)
+
+@api_view(["GET"])
+def get_task_types(request):
+    """Returns a list of the different types a task can have."""
+    return Response(Task.Type.choices)
+
+@api_view(["GET"])
+def get_task_status_types(request):
+    """Returns a list of the different status values a task can
+    have."""
+    return Response(Task.Status.choices)
+
         

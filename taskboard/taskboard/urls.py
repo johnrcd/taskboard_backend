@@ -38,6 +38,8 @@ router.register(r"comments", views.CommentViewSet, basename="comments")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("api/tasks/types/", views.get_task_types),
+    path("api/tasks/status/", views.get_task_status_types),
     path('api/', include(router.urls)),
     path('api/token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
