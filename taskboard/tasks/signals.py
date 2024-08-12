@@ -25,6 +25,12 @@ def comment_post_save_handler(sender, instance, **kwargs):
         message=message
     )
 
+    Activity.objects.create(
+        user=instance.poster,
+        type=Activity.Type.NEW_COMMENT,
+        task=instance.task,
+    )
+
 @receiver(post_save, sender=Task)
 def task_post_save_handler(sender, instance, *args, **kwargs):
     """Handles the validation of Tasks when they are saved."""
