@@ -40,8 +40,11 @@ class CommentSerializer(serializers.ModelSerializer):
 
         poster_pk = data.pop("poster")
 
+        user = TaskboardUser.objects.get(pk=poster_pk)
+
         data.update({
-            "poster": TaskboardUser.objects.get(pk=poster_pk).username
+            "poster": user.username,
+            "poster_name": user.name or user.username,
         })
 
         return data
@@ -90,9 +93,11 @@ class TaskDetailsSerializer(serializers.ModelSerializer):
         author_pk = data.pop("author")
         project_pk = data.pop("project")
 
+        user = TaskboardUser.objects.get(pk=author_pk)
         data.update({
-            "author": TaskboardUser.objects.get(pk=author_pk).username}
-        )
+            "author": user.username,
+            "author_name": user.name or user.username,
+        })
 
         # TODO: replace this with something that doesn't require a try/catch
         #       not sure how efficient try/catch is in Python but it can't be good lol
