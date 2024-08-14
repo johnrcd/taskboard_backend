@@ -41,3 +41,9 @@ class TaskboardUserProfileSerializer(serializers.ModelSerializer):
             "title",
             "about_me",
         )
+
+class TaskboardUserModificationSerializer(serializers.ModelSerializer):
+    """serializer for making changes for a Taskboard User."""
+    class Meta:
+        model = TaskboardUser
+        fields = "__all__"

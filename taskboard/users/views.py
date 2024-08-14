@@ -1,14 +1,19 @@
 from django.shortcuts import render, get_object_or_404
 
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
+from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
 from rest_framework_simplejwt.authentication import JWTStatelessUserAuthentication
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .serializers import TaskboardUserCreateSerializer, TaskboardUserProfileSerializer
+from .serializers import (
+    TaskboardUserCreateSerializer,
+    TaskboardUserProfileSerializer,
+    TaskboardUserModificationSerializer,
+)
 from .models import TaskboardUser
 
 class LoginStatusAPI(APIView):
@@ -50,6 +55,55 @@ class RegisterAPI(APIView):
         return_data["date_joined"]  = serializer.data["date_joined"]
 
         return Response(data=return_data, status=status.HTTP_201_CREATED)
+
+
+class ProfileViewSet(viewsets.ViewSet):
+    lookup_field = "username"
+    permission_classes=(IsAuthenticatedOrReadOnly,)
+
+    def retrieve(self, request, username=None):
+        """Returns a single user."""
+
+        user = get_object_or_404(TaskboardUser.objects.all(), username=username)
+        serializer = TaskboardUserProfileSerializer(user)
+        return Response(serializer.data)
+    
+    # i just copied directly from the source. seems to be boilerplate tbh
+    # https://www.cdrf.co/3.14/rest_framework.viewsets/ModelViewSet.html#partial_update
+    def partial_update(self, request, *args, **kwargs):
+        """Partially updates a user."""
+
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
+    
+    def update(self, request, *args, **kwargs):
+        """Updates a user's fields."""
+
+        partial = kwargs.pop('partial', False)
+
+        if request.data["username"] != request.user.username:
+            content = {
+                "error": "Cannot update user profile of " + \
+                str(request.data["username"]) + " because request is " + \
+                "authenticated as " + str(request.user.username) + ". " + \
+                "Users cannot update other profiles."
+            }
+            return Response(data=content, status=status.HTTP_401_UNAUTHORIZED)
+
+        user = get_object_or_404(TaskboardUser.objects.all(), username=request.user.username)
+        serializer = TaskboardUserProfileSerializer(user, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        # i don't know what this does but the api documentation had this
+        # https://www.cdrf.co/3.14/rest_framework.viewsets/ModelViewSet.html#update
+        if getattr(user, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            user._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
+
     
 @api_view(["GET"])
 def view_profile(request, username):

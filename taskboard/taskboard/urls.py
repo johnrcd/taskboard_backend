@@ -23,6 +23,7 @@ from users.views import (
     RegisterAPI,
     MyTokenObtainPairView,
     view_profile,
+    ProfileViewSet,
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -35,6 +36,7 @@ router = DefaultRouter()
 router.register(r"tasks", views.TaskViewSet, basename='tasks')
 router.register(r"projects", views.ProjectViewSet, basename="projects")
 router.register(r"comments", views.CommentViewSet, basename="comments")
+router.register(r"profiles", ProfileViewSet, basename="profiles")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
