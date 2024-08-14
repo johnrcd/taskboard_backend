@@ -70,18 +70,22 @@ class ProfileViewSet(viewsets.ViewSet):
     
     # i just copied directly from the source. seems to be boilerplate tbh
     # https://www.cdrf.co/3.14/rest_framework.viewsets/ModelViewSet.html#partial_update
-    def partial_update(self, request, *args, **kwargs):
+    def partial_update(self, request, username=None, *args, **kwargs):
         """Partially updates a user."""
 
         kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
     
-    def update(self, request, *args, **kwargs):
+    def update(self, request, username=None, *args, **kwargs):
         """Updates a user's fields."""
 
-        partial = kwargs.pop('partial', False)
+        # forcing PATCH and PUT to act the same because i don't care
+        # about the nuances between them
 
-        if request.data["username"] != request.user.username:
+        # partial = kwargs.pop('partial', False)
+        partial = True
+
+        if username != request.user.username:
             content = {
                 "error": "Cannot update user profile of " + \
                 str(request.data["username"]) + " because request is " + \
