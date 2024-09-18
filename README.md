@@ -6,9 +6,7 @@
 
 It's a fun proof of concept, so I won't actually be using it as a type of kanban board, or anything like that. Though, feel free to use it, just to populate it with stuff.
 
-At the time of writing, this isn't hosted anywhere. If you're reading this and the repository is public, it probably means that it should be. You can ask me about that if I haven't updated this section to include a link.
-
-As an alternative, I'll probably have a video of the site running somewhere. Though, y'know, a demonstration is always cooler.
+The website can be viewed over at [rovidecena.com/taskboard/](https://www.rovidecena.com/taskboard/)
 
 ## backend details
 
